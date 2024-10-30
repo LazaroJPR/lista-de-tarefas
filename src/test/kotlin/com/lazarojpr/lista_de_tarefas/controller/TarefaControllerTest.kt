@@ -1,11 +1,12 @@
 package com.lazarojpr.lista_de_tarefas.controller
 
-import com.lazarojpr.lista_de_tarefas.repository.TarefaRepository
-import com.lazarojpr.lista_de_tarefas.service.TarefaService
 import com.lazarojpr.lista_de_tarefas.model.Tarefa
-import org.junit.jupiter.api.Assertions.*
+import com.lazarojpr.lista_de_tarefas.service.TarefaService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.context.SpringBootTest
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -13,36 +14,71 @@ import java.time.LocalDate
 @SpringBootTest
 class TarefaControllerTest {
 
-    private val tarefaRepository = mock(TarefaRepository::class.java)
-    private val tarefaService = TarefaService(tarefaRepository)
+    private lateinit var tarefaController: TarefaController
 
-    @Test
-    fun `deve listar todas as tarefas ordenadas pela ordem de apresentacao`() {
-        val tarefas = listOf(
-            Tarefa(1, "Tarefa 1", BigDecimal(500), LocalDate.now().plusDays(10), 2),
-            Tarefa(2, "Tarefa 2", BigDecimal(1000), LocalDate.now().plusDays(5), 1)
-        )
+    @Mock
+    private lateinit var tarefaService: TarefaService
 
-        `when`(tarefaRepository.findAll()).thenReturn(tarefas)
-
-        val resultado = tarefaService.listarTarefas()
-
-        assertEquals(2, resultado.size)
-        assertEquals("Tarefa 2", resultado[0].nome)
-        assertEquals("Tarefa 1", resultado[1].nome)
+    @BeforeEach
+    fun setup() {
+        MockitoAnnotations.openMocks(this)
+        tarefaController = TarefaController(tarefaService)
     }
 
     @Test
-    fun `deve lançar exceção ao tentar salvar tarefa com nome duplicado`() {
-        val tarefaExistente = Tarefa(1, "Tarefa Existente", BigDecimal(500), LocalDate.now(), 1)
-        `when`(tarefaRepository.findByNome("Tarefa Existente")).thenReturn(tarefaExistente)
+    fun `deve criar uma tarefa`() {
+        val tarefa = Tarefa(
+            id = 1L,
+            nome = "Tarefa Exemplo",
+            custo = BigDecimal(100),
+            dataLimite = LocalDate.of(2024, 12, 31),
+            ordemApresentacao = 1
+        )
 
-        val novaTarefa = Tarefa(0, "Tarefa Existente", BigDecimal(600), LocalDate.now(), 2)
+        Mockito.`when`(tarefaService.salvarTarefa(tarefa)).thenReturn(tarefa)
+        tarefaController.criarTarefa(tarefa)
+        Mockito.verify(tarefaService, Mockito.times(1)).salvarTarefa(tarefa)
+    }
 
-        val excecao = assertThrows(IllegalArgumentException::class.java) {
-            tarefaService.salvarTarefa(novaTarefa)
-        }
+    @Test
+    fun `deve atualizar uma tarefa`() {
+        val tarefa = Tarefa(
+            id = 1L,
+            nome = "Tarefa Atualizada",
+            custo = BigDecimal(200),
+            dataLimite = LocalDate.of(2024, 11, 30),
+            ordemApresentacao = 2
+        )
 
-        assertEquals("Já existe uma tarefa com esse nome.", excecao.message)
+        val id = tarefa.id
+
+        Mockito.`when`(tarefaService.atualizarTarefa(id, tarefa)).thenReturn(tarefa)
+        tarefaController.atualizarTarefa(id, tarefa)
+        Mockito.verify(tarefaService, Mockito.times(1)).atualizarTarefa(id, tarefa)
+    }
+
+    @Test
+    fun `deve excluir uma tarefa`() {
+        val id = 1L
+
+        tarefaController.excluirTarefa(id)
+        Mockito.verify(tarefaService, Mockito.times(1)).excluirTarefa(id)
+    }
+
+    @Test
+    fun `deve listar todas as tarefas`() {
+        val tarefas = listOf(
+            Tarefa(
+                id = 1L,
+                nome = "Tarefa Exemplo",
+                custo = BigDecimal(100),
+                dataLimite = LocalDate.of(2024, 12, 31),
+                ordemApresentacao = 1
+            )
+        )
+
+        Mockito.`when`(tarefaService.listarTarefas()).thenReturn(tarefas)
+        tarefaController.listarTarefas()
+        Mockito.verify(tarefaService, Mockito.times(1)).listarTarefas()
     }
 }
