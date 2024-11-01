@@ -5,6 +5,7 @@ import com.lazarojpr.lista_de_tarefas.service.TarefaService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+
 @RestController
 @RequestMapping("/tarefas")
 class TarefaController (private val tarefaService: TarefaService){
