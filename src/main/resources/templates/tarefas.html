@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Tarefas</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<h1>Lista de Tarefas</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Nome da Tarefa</th>
+        <th>Custo (R$)</th>
+        <th>Data Limite</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tarefa : ${tarefas}">
+        <td th:text="${tarefa.nome}"></td>
+        <td th:text="${tarefa.custo}"></td>
+        <td th:text="${tarefa.dataLimite}"></td>
+        <td>
+            <a th:href="@{/tarefas/edit/{id}(id=${tarefa.id})}">Editar</a>
+            <form th:action="@{/tarefas/{id}(id=${tarefa.id})}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir esta tarefa?');">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" title="Excluir">🗑️</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a href="/tarefas/new">Incluir Nova Tarefa</a>
+</body>
+</html>
