@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Nova Tarefa</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script rc="../js/scripts.js" defer></script>
+</head>
+<body>
+<h1>Criar Nova Tarefa</h1>
+<form onsubmit="createTarefa(event)">
+    <label>Nome da Tarefa:</label>
+    <input type="text" id="nome" required />
+    <label>Custo:</label>
+    <input type="number" id="custo" required />
+    <label>Data Limite:</label>
+    <input type="date" id="dataLimite" required />
+    <button type="submit">Criar</button>
+    <button type="button" onclick="window.location.href='/tarefas/home'">Cancelar</button>
+</form>
+</body>
+</html>
