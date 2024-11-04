@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista de Tarefas</title>
+    <script src="/js/scripts.js"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
@@ -12,6 +13,8 @@
         <th>Nome da Tarefa</th>
         <th>Custo (R$)</th>
         <th>Data Limite</th>
+        <th>Ordem de Apresentação</th>
+        <th>ID</th>
         <th>Ações</th>
     </tr>
     </thead>
@@ -20,12 +23,11 @@
         <td th:text="${tarefa.nome}"></td>
         <td th:text="${tarefa.custo}"></td>
         <td th:text="${tarefa.dataLimite}"></td>
+        <td th:text="${tarefa.ordemApresentacao}"></td>
+        <td th:text="${tarefa.id}"></td>
         <td>
             <a th:href="@{/tarefas/edit/{id}(id=${tarefa.id})}">Editar</a>
-            <form th:action="@{/tarefas/{id}(id=${tarefa.id})}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir esta tarefa?');">
-                <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" title="Excluir">🗑️</button>
-            </form>
+            <button th:onclick="'deleteTarefa(' + ${tarefa.id} + ')'">Excluir</button>
         </td>
     </tr>
     </tbody>
