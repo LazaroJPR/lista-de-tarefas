@@ -13,7 +13,11 @@ class TarefaService(private val tarefaRepository: TarefaRepository) {
         if (tarefaRepository.findByNome(tarefa.nome) != null) {
             throw IllegalArgumentException("Já existe uma tarefa com esse nome.")
         }
-        return tarefaRepository.save(tarefa)
+
+        val maxOrdem = tarefaRepository.findMaxOrdemApresentacao() ?: 0 // Retorna 0 se não houver tarefas
+        val tarefaComOrdem = tarefa.copy(ordemApresentacao = maxOrdem + 1) // Incrementa para a nova tarefa
+
+        return tarefaRepository.save(tarefaComOrdem)
     }
 
     fun atualizarTarefa(id: Long, tarefaAtualizada: Tarefa): Tarefa {
