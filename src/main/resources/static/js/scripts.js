@@ -6,41 +6,43 @@ function closeCreateModal() {
     document.getElementById('createModal').style.display = 'none';
 }
 
-function createTarefa() {
-    const form = document.getElementById('tarefaForm');
-    const formData = new FormData(form);
+function createTarefa(event) {
+    event.preventDefault(); // Evita o envio do formulário padrão
 
+    // Coleta os dados do formulário
+    const nome = document.getElementById('nome').value;
+    const custo = document.getElementById('custo').value;
+    const dataLimite = document.getElementById('dataLimite').value;
+
+    // Cria um objeto para enviar ao servidor
     const tarefa = {
-        nome: formData.get('nome'),
-        custo: parseFloat(formData.get('custo')), // Converte para número
-        dataLimite: formData.get('dataLimite'),
-        // Os outros campos serão gerados automaticamente no backend
+        nome: nome,
+        custo: parseFloat(custo), // Converte para número
+        dataLimite: dataLimite
     };
 
+    // Faz a requisição POST para criar a nova tarefa
     fetch('/tarefas', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(tarefa),
+        body: JSON.stringify(tarefa)
     })
     .then(response => {
         if (response.ok) {
-            alert('Tarefa criada com sucesso!');
-            form.reset(); // Limpa o formulário após o envio
+            window.location.href = '/tarefas/home'; // Redireciona após a criação
         } else {
-            return response.json().then(error => {
-                throw new Error(error.message || 'Erro ao criar a tarefa.');
-            });
+            return response.text().then(text => { alert(text); });
         }
     })
     .catch(error => {
-        console.error('Erro:', error);
-        alert('Ocorreu um erro: ' + error.message); // Mostra o erro na tela
+        console.error('Erro:', error); // Log de erro no console
     });
 }
 
 function deleteTarefa(id) {
+    console.log("ID da tarefa para deletar:", id);
     if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
         fetch(`/tarefas/${id}`, {
             method: 'DELETE'
