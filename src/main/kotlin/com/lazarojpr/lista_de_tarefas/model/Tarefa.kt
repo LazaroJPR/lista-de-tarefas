@@ -8,7 +8,7 @@ import java.time.LocalDate
 @Table(name = "tarefas")
 data class Tarefa(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    val id: Long? = null,
 
     @Column(unique = true, nullable = false)
     val nome: String,
