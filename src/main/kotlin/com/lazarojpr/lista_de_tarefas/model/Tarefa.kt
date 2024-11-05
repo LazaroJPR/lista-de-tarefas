@@ -9,16 +9,12 @@ import java.time.LocalDate
 data class Tarefa(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @Column(unique = true, nullable = false)
     val nome: String,
-
     @Column(nullable = false)
     val custo: BigDecimal,
-
     @Column(name = "data_limite", nullable = false)
     val dataLimite: LocalDate,
-
     @Column(name = "ordem_apresentacao", nullable = false, unique = true)
-    val ordemApresentacao: Int
+    val ordemApresentacao: Int,
 )
