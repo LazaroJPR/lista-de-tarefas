@@ -13,17 +13,17 @@ import java.util.*
 
 @SpringBootTest
 class TarefaServiceTest {
-
     private val tarefaRepository: TarefaRepository = mock(TarefaRepository::class.java)
     private val tarefaService: TarefaService = TarefaService(tarefaRepository)
 
-    private val tarefaMock = Tarefa(
-        id = 1L,
-        nome = "Tarefa Teste",
-        custo = BigDecimal.valueOf(100),
-        dataLimite = LocalDate.of(2024, 12, 31),
-        ordemApresentacao = 1
-    )
+    private val tarefaMock =
+        Tarefa(
+            id = 1L,
+            nome = "Tarefa Teste",
+            custo = BigDecimal.valueOf(100),
+            dataLimite = LocalDate.of(2024, 12, 31),
+            ordemApresentacao = 1,
+        )
 
     @Test
     fun `listarTarefas deve retornar lista ordenada de tarefas`() {
@@ -50,9 +50,10 @@ class TarefaServiceTest {
     fun `salvarTarefa deve lançar exceção quando nome já existe`() {
         `when`(tarefaRepository.findByNome(tarefaMock.nome)).thenReturn(tarefaMock)
 
-        val exception = assertThrows<IllegalArgumentException> {
-            tarefaService.salvarTarefa(tarefaMock)
-        }
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                tarefaService.salvarTarefa(tarefaMock)
+            }
 
         assertEquals("Já existe uma tarefa com esse nome.", exception.message)
     }
@@ -78,9 +79,10 @@ class TarefaServiceTest {
         `when`(tarefaRepository.findById(tarefaMock.id)).thenReturn(Optional.of(tarefaMock))
         `when`(tarefaRepository.findByNome(outraTarefa.nome)).thenReturn(outraTarefa)
 
-        val exception = assertThrows<IllegalArgumentException> {
-            tarefaService.atualizarTarefa(tarefaMock.id, tarefaAtualizada)
-        }
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                tarefaService.atualizarTarefa(tarefaMock.id, tarefaAtualizada)
+            }
 
         assertEquals("Já existe uma tarefa com esse nome.", exception.message)
     }
@@ -91,5 +93,38 @@ class TarefaServiceTest {
 
         tarefaService.excluirTarefa(tarefaMock.id)
         verify(tarefaRepository, times(1)).deleteById(tarefaMock.id)
+    }
+
+    @Test
+    fun `trocarTarefas deve trocar as ordens de apresentacao entre duas tarefas`() {
+        val tarefa1 =
+            Tarefa(
+                id = 1L,
+                nome = "Tarefa 1",
+                custo = BigDecimal.valueOf(100),
+                dataLimite = LocalDate.of(2024, 12, 31),
+                ordemApresentacao = 1,
+            )
+        val tarefa2 =
+            Tarefa(
+                id = 2L,
+                nome = "Tarefa 2",
+                custo = BigDecimal.valueOf(200),
+                dataLimite = LocalDate.of(2024, 12, 31),
+                ordemApresentacao = 2,
+            )
+
+        `when`(tarefaRepository.findById(1L)).thenReturn(Optional.of(tarefa1))
+        `when`(tarefaRepository.findById(2L)).thenReturn(Optional.of(tarefa2))
+
+        val tarefaAtualizada1 = tarefa1.copy(ordemApresentacao = tarefa2.ordemApresentacao)
+        val tarefaAtualizada2 = tarefa2.copy(ordemApresentacao = tarefa1.ordemApresentacao)
+        `when`(tarefaRepository.save(tarefaAtualizada1)).thenReturn(tarefaAtualizada1)
+        `when`(tarefaRepository.save(tarefaAtualizada2)).thenReturn(tarefaAtualizada2)
+
+        tarefaService.trocarTarefas(1L, 2L)
+
+        verify(tarefaRepository).save(tarefaAtualizada1)
+        verify(tarefaRepository).save(tarefaAtualizada2)
     }
 }
