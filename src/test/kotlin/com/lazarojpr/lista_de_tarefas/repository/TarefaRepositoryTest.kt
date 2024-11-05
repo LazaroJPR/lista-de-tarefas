@@ -11,7 +11,6 @@ import java.time.LocalDate
 
 @DataJpaTest
 class TarefaRepositoryTest {
-
     @Autowired
     private lateinit var tarefaRepository: TarefaRepository
 
@@ -19,15 +18,15 @@ class TarefaRepositoryTest {
 
     @BeforeEach
     fun setup() {
-        // Limpar o repositório e adicionar uma tarefa inicial
         tarefaRepository.deleteAll()
 
-        tarefa = Tarefa(
-            nome = "Estudar Kotlin",
-            custo = BigDecimal(50),
-            dataLimite = LocalDate.now().plusDays(7),
-            ordemApresentacao = 1
-        )
+        tarefa =
+            Tarefa(
+                nome = "Estudar Kotlin",
+                custo = BigDecimal(50),
+                dataLimite = LocalDate.now().plusDays(7),
+                ordemApresentacao = 1,
+            )
         tarefaRepository.save(tarefa)
     }
 
@@ -46,12 +45,13 @@ class TarefaRepositoryTest {
 
     @Test
     fun `deve salvar uma nova tarefa`() {
-        val novaTarefa = Tarefa(
-            nome = "Aprender Spring Boot",
-            custo = BigDecimal(100),
-            dataLimite = LocalDate.now().plusDays(10),
-            ordemApresentacao = 2
-        )
+        val novaTarefa =
+            Tarefa(
+                nome = "Aprender Spring Boot",
+                custo = BigDecimal(100),
+                dataLimite = LocalDate.now().plusDays(10),
+                ordemApresentacao = 2,
+            )
 
         val tarefaSalva = tarefaRepository.save(novaTarefa)
         assertNotNull(tarefaSalva)
@@ -66,5 +66,30 @@ class TarefaRepositoryTest {
         tarefaRepository.delete(tarefaParaDeletar!!)
         val tarefaDeletada = tarefaRepository.findByNome("Estudar Kotlin")
         assertNull(tarefaDeletada)
+    }
+
+    @Test
+    fun `deve encontrar a maior ordem de apresentacao`() {
+        val tarefa1 =
+            Tarefa(
+                nome = "Primeira Tarefa",
+                custo = BigDecimal(20),
+                dataLimite = LocalDate.now().plusDays(5),
+                ordemApresentacao = 1,
+            )
+        val tarefa2 =
+            Tarefa(
+                nome = "Segunda Tarefa",
+                custo = BigDecimal(30),
+                dataLimite = LocalDate.now().plusDays(6),
+                ordemApresentacao = 3,
+            )
+        tarefaRepository.save(tarefa1)
+        tarefaRepository.save(tarefa2)
+
+        val maxOrdemApresentacao = tarefaRepository.findMaxOrdemApresentacao()
+
+        assertNotNull(maxOrdemApresentacao)
+        assertEquals(3, maxOrdemApresentacao)
     }
 }
