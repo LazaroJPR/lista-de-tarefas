@@ -2,21 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Criar Nova Tarefa</title>
+    <title>Incluir Nova Tarefa</title>
+    <link rel="icon" href="/Favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/js/scripts.js"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<h1>Criar Nova Tarefa</h1>
-<form onsubmit="createTarefa(event)">
-    <label>Nome da Tarefa:</label>
-    <input type="text" id="nome" required />
-    <label>Custo:</label>
-    <input type="number" id="custo" required />
-    <label>Data Limite:</label>
-    <input type="date" id="dataLimite" required />
-    <button type="submit">Criar</button>
-    <button type="button" onclick="window.location.href='/tarefas/home'">Cancelar</button>
+<nav class="navbar navbar-light bg-dark">
+    <a class="navbar-brand" href="#">
+        <img src="/Svg/add-svgrepo-com.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+        Incluir Nova Tarefa
+    </a>
+</nav>
+<form onsubmit="createTarefa(event)" class="p-4 border rounded shadow-sm">
+    <div class="form-group">
+        <label for="nome">Nome da Tarefa:</label>
+        <input type="text" id="nome" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="custo">Custo (R$):</label>
+        <input type="number" id="custo" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="dataLimite">Data Limite:</label>
+        <input type="date" id="dataLimite" class="form-control" required />
+    </div>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Criar</button>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='/tarefas/home'">Cancelar</button>
+    </div>
 </form>
+<footer class="bg-dark text-white text-center mt-4 p-3">
+    <p>Lázaro José Pedrosa dos Reis |
+        <a href="https://github.com/LazaroJPR" class="text-white" target="_blank">GitHub</a>
+    </p>
+</footer>
 </body>
 </html>
