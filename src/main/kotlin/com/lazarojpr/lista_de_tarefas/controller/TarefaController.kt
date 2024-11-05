@@ -31,4 +31,13 @@ class TarefaController(
         tarefaService.excluirTarefa(id)
         return ResponseEntity.noContent().build()
     }
+
+    @PutMapping("/trocar/{id1}/{id2}")
+    fun trocarTarefas(
+        @PathVariable id1: Long,
+        @PathVariable id2: Long,
+    ): ResponseEntity<Void> {
+        tarefaService.trocarTarefas(id1, id2)
+        return ResponseEntity.noContent().build()
+    }
 }
