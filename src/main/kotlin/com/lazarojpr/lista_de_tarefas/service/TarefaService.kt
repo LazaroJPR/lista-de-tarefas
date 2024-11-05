@@ -5,8 +5,9 @@ import com.lazarojpr.lista_de_tarefas.repository.TarefaRepository
 import org.springframework.stereotype.Service
 
 @Service
-class TarefaService(private val tarefaRepository: TarefaRepository) {
-
+class TarefaService(
+    private val tarefaRepository: TarefaRepository,
+) {
     fun listarTarefas(): List<Tarefa> = tarefaRepository.findAll().sortedBy { it.ordemApresentacao }
 
     fun salvarTarefa(tarefa: Tarefa): Tarefa {
@@ -20,16 +21,20 @@ class TarefaService(private val tarefaRepository: TarefaRepository) {
         return tarefaRepository.save(tarefaComOrdem)
     }
 
-    fun atualizarTarefa(id: Long, tarefaAtualizada: Tarefa): Tarefa {
+    fun atualizarTarefa(
+        id: Long,
+        tarefaAtualizada: Tarefa,
+    ): Tarefa {
         val tarefaExistente = tarefaRepository.findById(id).orElseThrow { IllegalArgumentException("Tarefa não encontrada") }
         if (tarefaRepository.findByNome(tarefaAtualizada.nome) != null && tarefaAtualizada.nome != tarefaExistente.nome) {
             throw IllegalArgumentException("Já existe uma tarefa com esse nome.")
         }
-        val tarefaComAtualizacoes = tarefaExistente.copy(
-            nome = tarefaAtualizada.nome,
-            custo = tarefaAtualizada.custo,
-            dataLimite = tarefaAtualizada.dataLimite
-        )
+        val tarefaComAtualizacoes =
+            tarefaExistente.copy(
+                nome = tarefaAtualizada.nome,
+                custo = tarefaAtualizada.custo,
+                dataLimite = tarefaAtualizada.dataLimite,
+            )
         return tarefaRepository.save(tarefaComAtualizacoes)
     }
 
