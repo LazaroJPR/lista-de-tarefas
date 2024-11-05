@@ -39,4 +39,19 @@ class TarefaService(
     }
 
     fun excluirTarefa(id: Long) = tarefaRepository.deleteById(id)
+
+    fun trocarTarefas(
+        id1: Long,
+        id2: Long,
+    ) {
+        val tarefa1 = tarefaRepository.findById(id1).orElseThrow { IllegalArgumentException("Tarefa $id1 não encontrada") }
+        val tarefa2 = tarefaRepository.findById(id2).orElseThrow { IllegalArgumentException("Tarefa $id2 não encontrada") }
+
+        val ordemTemp = tarefa1.ordemApresentacao
+        val tarefaAtualizada1 = tarefa1.copy(ordemApresentacao = tarefa2.ordemApresentacao)
+        val tarefaAtualizada2 = tarefa2.copy(ordemApresentacao = ordemTemp)
+
+        tarefaRepository.save(tarefaAtualizada1)
+        tarefaRepository.save(tarefaAtualizada2)
+    }
 }
