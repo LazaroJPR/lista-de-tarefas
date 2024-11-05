@@ -8,13 +8,13 @@ import java.time.LocalDate
 @Table(name = "tarefas")
 data class Tarefa(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0L,
     @Column(unique = true, nullable = false)
     val nome: String,
     @Column(nullable = false)
     val custo: BigDecimal,
     @Column(name = "data_limite", nullable = false)
     val dataLimite: LocalDate,
-    @Column(name = "ordem_apresentacao", nullable = false, unique = true)
-    val ordemApresentacao: Int,
+    @Column(name = "ordem_apresentacao", nullable = false)
+    var ordemApresentacao: Int,
 )
