@@ -1,25 +1,27 @@
-# Use uma imagem base do Maven para construir o projeto
-FROM maven:3.8.5-openjdk-17 AS build
+# Usar uma imagem base do OpenJDK
+FROM openjdk:17-jdk-slim as builder
 
-# Defina o diretório de trabalho
+# Instalar o Maven
+RUN apt-get update && apt-get install -y maven
+
+# Configurar diretório de trabalho
 WORKDIR /app
 
-# Copie o pom.xml e baixe as dependências
+# Copiar o arquivo pom.xml e a pasta src para a imagem
 COPY pom.xml .
 COPY src ./src
+
+# Executar o Maven para compilar o projeto
 RUN mvn clean package -DskipTests
 
-# Use uma imagem base do OpenJDK para rodar o aplicativo
+# Usar uma imagem base do OpenJDK para rodar o aplicativo
 FROM openjdk:17-jdk-slim
 
-# Defina o diretório de trabalho
-WORKDIR /app
+# Copiar o jar do build anterior
+COPY --from=builder /app/target/lista-de-tarefas-0.0.1-SNAPSHOT.jar app.jar
 
-# Copie o JAR gerado da etapa de construção
-COPY --from=build /app/target/*.jar app.jar
-
-# Exponha a porta que o aplicativo irá usar
+# Expor a porta que o aplicativo irá rodar
 EXPOSE 8080
 
-# Comando para rodar o aplicativo
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Comando para executar o aplicativo
+ENTRYPOINT ["java", "-jar", "/app.jar"]
