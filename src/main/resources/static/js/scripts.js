@@ -34,8 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createTarefa(event) {
         event.preventDefault();
-
-        // Verifica se os elementos do formulário existem
         const nome = document.getElementById('nome');
         const custo = document.getElementById('custo');
         const dataLimite = document.getElementById('dataLimite');
@@ -90,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const custo = parseFloat(document.getElementById('custo').value);
                 const dataLimite = document.getElementById('dataLimite').value;
 
-                // Verifica se os campos estão preenchidos
                 if (!nome || isNaN(custo) || !dataLimite) {
                     Swal.showValidationMessage('Por favor, preencha todos os campos');
                     return false;
@@ -133,7 +130,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-     document.querySelectorAll('.edit-btn').forEach(button => {
+    function moveTask(id1, id2) {
+        fetch(`/tarefas/trocar/${id1}/${id2}`, {
+            method: 'PUT'
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Erro ao mover a tarefa!',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    }
+
+    document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.dataset.id;
             const nome = this.dataset.nome;
@@ -143,7 +160,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.querySelectorAll('.btn-secondary').forEach(button => {
+        button.addEventListener('click', function() {
+            const [id1, id2] = this.getAttribute('onclick').match(/\d+/g);
+            moveTask(id1, id2);
+        });
+    });
+
     window.deleteTarefa = deleteTarefa;
     window.editTarefa = editTarefa;
     window.createTarefa = createTarefa;
+    window.moveTask = moveTask;
 });
+
+let draggedRow = null;
+
+function drag(event) {
+    draggedRow = event.target;
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+    const targetRow = event.target.closest('tr');
+
+    if (targetRow && draggedRow !== targetRow) {
+        const id1 = draggedRow.getAttribute('data-id');
+        const id2 = targetRow.getAttribute('data-id');
+
+        moveTask(id1, id2);
+        draggedRow.parentNode.insertBefore(draggedRow, targetRow.nextSibling);
+    }
+}

@@ -22,18 +22,15 @@
         <th scope="col">Nome da Tarefa</th>
         <th scope="col">Custo (R$)</th>
         <th scope="col">Data Limite</th>
-        <th scope="col">Ordem de Apresentação</th>
         <th scope="col">ID</th>
         <th scope="col">Ações</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="tarefa : ${tarefas}"
-        th:class="${tarefa.custo >= 1000} ? 'bg-warning'">
+    <tr th:each="tarefa, iterStat : ${tarefas}" th:class="${tarefa.custo >= 1000} ? 'bg-warning'" draggable="true" th:data-id="${tarefa.id}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
         <td th:text="${tarefa.nome}"></td>
         <td th:text="${tarefa.custo}"></td>
         <td th:text="${tarefa.dataLimite}"></td>
-        <td th:text="${tarefa.ordemApresentacao}"></td>
         <td th:text="${tarefa.id}"></td>
         <td>
             <button
@@ -46,6 +43,14 @@
             </button>
             <button th:onclick="'deleteTarefa(' + ${tarefa.id} + ')'" class="btn btn-sm btn-danger">
                 <i class="fas fa-trash-alt"></i>
+            </button>
+            <button th:if="${iterStat.index > 0}"
+                    th:onclick="'moveTask(' + ${tarefa.id} + ', ' + ${tarefas[iterStat.index - 1].id} + ')'" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            <button th:if="${iterStat.index < #lists.size(tarefas) - 1}"
+                    th:onclick="'moveTask(' + ${tarefa.id} + ', ' + ${tarefas[iterStat.index + 1].id} + ')'" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-down"></i>
             </button>
         </td>
     </tr>
