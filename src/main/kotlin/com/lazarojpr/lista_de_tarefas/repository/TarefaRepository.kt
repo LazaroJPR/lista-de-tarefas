@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TarefaRepository : JpaRepository<Tarefa, Long>{
+interface TarefaRepository : JpaRepository<Tarefa, Long> {
     fun findByNome(nome: String): Tarefa?
 
     @Query("SELECT MAX(t.ordemApresentacao) FROM Tarefa t")
