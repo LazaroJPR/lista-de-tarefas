@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class GlobalExceptionHandler {
-
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<String> {
-        return ResponseEntity(ex.message, HttpStatus.BAD_REQUEST)
-    }
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<String> =
+        ResponseEntity(ex.message, HttpStatus.BAD_REQUEST)
 }
