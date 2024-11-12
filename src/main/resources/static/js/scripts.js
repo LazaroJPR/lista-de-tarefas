@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'Editar Tarefa',
             html: `
                 <input id="nome" class="swal2-input" placeholder="Nome da Tarefa" value="${nomeAtual}">
-                <input id="custo" type="number" class="swal2-input" placeholder="Custo (R$)" value="${custoAtual}">
+                <input id="custo" type="number" class="swal2-input" placeholder="Custo (R$)" value="${custoAtual}" max="9999999999999999999999999999.99">
                 <input id="dataLimite" type="date" class="swal2-input" placeholder="Data Limite" value="${dataLimiteAtual}">
             `,
             focusConfirm: false,
@@ -90,6 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!nome || isNaN(custo) || !dataLimite) {
                     Swal.showValidationMessage('Por favor, preencha todos os campos');
+                    return false;
+                }
+
+                const maxCusto = 9999999999999999999999999999.99;
+                if (custo > maxCusto) {
+                    Swal.showValidationMessage(`O custo não pode ser maior que ${maxCusto}`);
                     return false;
                 }
 
