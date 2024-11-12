@@ -15,5 +15,4 @@ This project is a simple web-based application for managing tasks, developed usi
 - **Backend**: Kotlin, Spring Boot
 - **Database**: H2 (or other relational database of your choice)
 
-This project is licensed under the MIT License - see the LICENSE file for details.
 You can replace the `H2` database or any other specific details based on what you implement.
