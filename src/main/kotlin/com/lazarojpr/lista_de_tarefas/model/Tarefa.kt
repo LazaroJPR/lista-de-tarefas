@@ -2,7 +2,9 @@ package com.lazarojpr.lista_de_tarefas.model
 
 import jakarta.persistence.*
 import java.math.BigDecimal
+import java.text.NumberFormat
 import java.time.LocalDate
+import java.util.*
 
 @Entity
 @Table(name = "tarefas")
@@ -17,4 +19,7 @@ data class Tarefa(
     val dataLimite: LocalDate,
     @Column(name = "ordem_apresentacao", nullable = false)
     var ordemApresentacao: Int,
-)
+) {
+    val custoFormatado: String
+        get() = NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(custo)
+}
