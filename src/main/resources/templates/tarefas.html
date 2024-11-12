@@ -29,7 +29,7 @@
     <tbody>
     <tr th:each="tarefa, iterStat : ${tarefas}" th:class="${tarefa.custo >= 1000} ? 'bg-warning'" draggable="true" th:data-id="${tarefa.id}" ondragstart="drag(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
         <td th:text="${tarefa.nome}"></td>
-        <td th:text="${tarefa.custo}"></td>
+        <td th:text="${tarefa.custoFormatado}"></td>
         <td th:text="${tarefa.dataLimite}"></td>
         <td th:text="${tarefa.id}"></td>
         <td>
